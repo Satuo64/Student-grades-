@@ -1,0 +1,113 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <iomanip>
+
+using namespace std;
+
+int main() {
+    vector<string> students;
+    vector<int> math_grades;
+    vector<int> science_grades;
+    vector<int> english_grades;
+
+    char choice;
+
+    do {
+        int num_of_students;
+
+        // Ask how many students to input (max 12)
+        do {
+            cout << "How many students? (1 to " << (12 - students.size()) << " only): ";
+            cin >> num_of_students;
+
+            if (num_of_students < 1 || num_of_students > (12 - students.size())) {
+                cout << "Invalid number! You can only add up to " << (12 - students.size()) << " more student(s).\n";
+            }
+        } while (num_of_students < 1 || num_of_students > (12 - students.size()));
+
+        cin.ignore(); // Clear buffer before getline
+
+        // Input student info and grades
+        for (int i = 0; i < num_of_students; i++) {
+            cout << "\n[Student " << students.size() + 1 << "]\n";
+
+            string name;
+            cout << "Enter name: ";
+            getline(cin, name);
+            students.push_back(name);
+
+            int math, science, english;
+
+            // Math grade input validation
+            do {
+                cout << "Math grade (0–99): ";
+                cin >> math;
+                if (math < 0 || math > 99)
+                    cout << "Invalid grade. Try again.\n";
+            } while (math < 0 || math > 99);
+            math_grades.push_back(math);
+
+            // Science grade input validation
+            do {
+                cout << "Science grade (0–99): ";
+                cin >> science;
+                if (science < 0 || science > 99)
+                    cout << "Invalid grade. Try again.\n";
+            } while (science < 0 || science > 99);
+            science_grades.push_back(science);
+
+            // English grade input validation
+            do {
+                cout << "English grade (0–99): ";
+                cin >> english;
+                if (english < 0 || english > 99)
+                    cout << "Invalid grade. Try again.\n";
+            } while (english < 0 || english > 99);
+            english_grades.push_back(english);
+
+            cin.ignore(); // Clear buffer before next loop iteration
+        }
+
+        // Stop asking if maximum students already reached
+        if (students.size() >= 12) {
+            cout << "\nMaximum of 12 students reached.\n";
+            break;
+        }
+
+        cout << "\nAdd more students? (Y/N): ";
+        cin >> choice;
+        cin.ignore(); // Clear newline for next getline if needed
+
+    } while (choice == 'Y' || choice == 'y');
+
+    // Print summary
+    cout << "\n\n--- STUDENT GRADE SUMMARY ---\n";
+    cout << left << setw(25) << "Name"
+         << setw(8) << "Math"
+         << setw(10) << "Science"
+         << setw(10) << "English"
+         << setw(8) << "Average"
+         << setw(10) << "Remarks" << endl;
+
+    for (size_t i = 0; i < students.size(); i++) {
+        int math = math_grades[i];
+        int science = science_grades[i];
+        int english = english_grades[i];
+        int average = (math + science + english) / 3;
+
+        string remark;
+        if (average <= 74) remark = "Failed";
+        else if (average <= 89) remark = "Passed";
+        else remark = "Excellent";
+
+        cout << left << setw(25) << students[i]
+             << setw(8) << math
+             << setw(10) << science
+             << setw(10) << english
+             << setw(8) << average
+             << setw(10) << remark << endl;
+    }
+
+    return 0;
+}
