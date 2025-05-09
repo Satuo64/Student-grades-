@@ -1,6 +1,7 @@
 #include <iostream>
 #include <ctime>
 #include <cstdlib>
+#include <algorithm>
 
 using namespace std;
 
@@ -9,35 +10,47 @@ string words[] = {
     "melon", "peach", "berry", "kiwi", "mango"
 };
 
+// Convert to lowercase
+string toLower(const string& str) {
+    string result = str;
+    transform(result.begin(), result.end(), result.begin(), ::tolower);
+    return result;
+}
+
 int main() {
     srand(time(0));
     int total = 0, correct = 0;
+
+    cout << "Typing Speed Test (30 seconds)\n";
+    cout << "Type the word and press Enter\n";
+    
     time_t startTime = time(0);
 
-    cout << "Typing Speed Test (You have 30 seconds)\n";
-    cout << "Type the word and press Enter\n\n";
-
     while (true) {
-        time_t currentTime = time(0);
-        if (currentTime - startTime >= 30) break;
-
         string randomWord = words[rand() % 10];
         cout << "Word: " << randomWord << "\n> ";
 
         string userInput;
-        cin >> userInput;
+        getline(cin, userInput);
 
-        if (userInput == randomWord) {
-            correct++;
-        }
+        time_t currentTime = time(0);
+        if (currentTime - startTime >= 30) break;
+
+        if (userInput.empty()) continue;
+
         total++;
+        if (toLower(userInput) == toLower(randomWord)) {
+            correct++;
+        } else {
+            cout << "Incorrect! The correct word was: " << randomWord << "\n";
+        }
     }
 
     cout << "\nTime's up!\n";
-    cout << "Total words: " << total << endl;
+    cout << "Total words attempted: " << total << endl;
     cout << "Correct words: " << correct << endl;
 
-    double wpm = correct * 2; // 30 seconds -> x2 to get per minute
+    double wpm = correct * 2; // since test is 30 seconds
     double accuracy = (total > 0) ? (100.0 * correct / total) : 0;
 
     cout << "WPM: " << wpm << endl;
